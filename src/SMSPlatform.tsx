@@ -62,6 +62,7 @@ const SMSPlatform = () => {
   const [errors, setErrors] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [submitValidCount, setSubmitValidCount] = useState(0); // NEW: Capture recipient count
 
   // SMS Stats
   const [stats, setStats] = useState({
@@ -189,13 +190,15 @@ const SMSPlatform = () => {
 
     setIsSubmitting(true);
 
+    const validNumbersCount = getValidNumbers(mobileNumbers).length;
+    setSubmitValidCount(validNumbersCount);
+
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const validNumbers = getValidNumbers(mobileNumbers);
     console.log("SMS Sent:", {
       sender: senderId,
-      recipients: validNumbers,
+      recipients: getValidNumbers(mobileNumbers),
       message,
       stats,
     });
@@ -234,7 +237,7 @@ const SMSPlatform = () => {
             <div className="success-alert">
               <span style={{ fontSize: "1.5rem" }}>✓</span>
               <div>
-                <strong>Success!</strong> SMS sent to {validNumbers.length}{" "}
+                <strong>Success!</strong> SMS sent to <strong>{submitValidCount}</strong>{" "}
                 recipient(s).
               </div>
             </div>
